@@ -1,0 +1,3 @@
+export enum ErrorStatus {
+  FILE_NOT_FOUND_OR_INVALID = 'FILE_NOT_FOUND_OR_INVALID',
+}
