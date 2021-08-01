@@ -6,7 +6,7 @@ const app = express();
 const packer = new Packer();
 app.get('/api/:fileName', async (req, res, next)=> {
   const fileName = req?.params?.fileName;
-  const result = packer.resolveContent(fileName);
+  const result = await packer.resolveContent(fileName);
   res.status(200).send(result);
 });
 

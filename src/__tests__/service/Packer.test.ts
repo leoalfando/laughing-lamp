@@ -17,12 +17,14 @@ describe('Packer', () => {
     sandbox.restore();
   });
   context('#resolveContent#', () => {
-    it('should be able to load file', async () => {
+    it('should be able to load file and resolve the file content', async () => {
       // Arrange
       const fileName = 'example_input';
-      await packer.resolveContent(fileName);
-      assert.isNotEmpty(packer.fileContent)
+      const result = await packer.resolveContent(fileName);
+      assert.isNotEmpty(packer.fileContent);
+      assert.isAtLeast(result?.contents?.length, 1);
     });
+
     it('should throw error', async ()=>{
       let thrownError;
       const fileName = 'wrong_file_name';
