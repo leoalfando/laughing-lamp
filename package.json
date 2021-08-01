@@ -6,7 +6,7 @@
   "scripts": {
     "build": "./node_modules/.bin/gulp build",
     "start": "npm run build && node ./dist/index.js",
-    "test": "node ./node_modules/jest/bin/jest",
+    "test": "npm run build && node ./node_modules/jest/bin/jest --verbose false",
     "lint:fix": "eslint . --fix --ext .ts",
     "lint": "eslint --quiet . --ext .js,.ts"
   },

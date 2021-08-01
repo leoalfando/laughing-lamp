@@ -7,19 +7,20 @@ import APIException from '../utils/APIException';
 export default class Packer{
   public filePath:string;
   public fileContent: string;
-  constructor(fileName){
-    this.filePath = appRoot + `/dist/resources/${fileName}`;
+
+  public async resolveContent(fileName):Promise<Packer>{
+    await this.loadFile(fileName);
+    return new Packer();
   }
-  public async loadFile():Promise<void> {
+
+  private async loadFile(fileName):Promise<void> {
     let data= "";
-    await fsPromises.readFile(this.filePath, "utf-8").then(function(result) {
+    const filePath = appRoot + `/dist/resources/${fileName}`;
+    await fsPromises.readFile(filePath, "utf-8").then(function(result) {
       data = result;
     }).catch(() => {
       throw new APIException(ErrorStatus.FILE_NOT_FOUND_OR_INVALID);
     })
     this.fileContent = data;
-  }
-  public async resolvePacking():Promise<void>{
-    console.log('empty');
   }
 }
