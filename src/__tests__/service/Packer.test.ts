@@ -5,6 +5,7 @@ import context from 'jest-plugin-context';
 import Packer from '../../service/Packer';
 import { assert } from 'chai';
 import APIException from '../../utils/APIException';
+import * as _ from 'lodash';
 
 
 describe('Packer', () => {
@@ -22,7 +23,7 @@ describe('Packer', () => {
       const fileName = 'example_input';
       const result = await packer.resolveContent(fileName);
       assert.isNotEmpty(packer.fileContent);
-      assert.isAtLeast(result?.contents?.length, 1);
+      assert.isAtLeast(_.size(packer.compiledContent?.contents), 1);
     });
 
     it('should throw error', async ()=>{
@@ -35,6 +36,8 @@ describe('Packer', () => {
         thrownError = error;
       }
       expect(thrownError).toEqual(new APIException(ErrorStatus.FILE_NOT_FOUND_OR_INVALID));
+      assert.isUndefined(packer.fileContent);
+      assert.isUndefined(packer.compiledContent);
     });
 
   });

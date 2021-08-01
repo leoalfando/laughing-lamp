@@ -10,12 +10,13 @@ import APIException from '../utils/APIException';
 export default class Packer{
   public filePath:string;
   public fileContent: string;
+  public compiledContent: CompiledContent;
 
-  public async resolveContent(fileName):Promise<CompiledContent>{
+  public async resolveContent(fileName):Promise<number[]>{
     await this.loadFile(fileName);
-    const compiledContent = await this.compileContent();
-    console.log('compiledContent',compiledContent);
-    return compiledContent;
+    await this.compileContent();
+
+    return [];
   }
 
   private async loadFile(fileName):Promise<void> {
@@ -29,9 +30,9 @@ export default class Packer{
     this.fileContent = data;
   }
 
-  public async compileContent():Promise<CompiledContent>{
+  public compileContent():void{
     const fileContentPerLine = this.fileContent.split('\n');
-    const maxWeightAndData = await fileContentPerLine.map(line=>{
+    const maxWeightAndData = fileContentPerLine.map(line=>{
       const contents = line.split(' : ');
       return contents;
     });
@@ -47,7 +48,7 @@ export default class Packer{
     });
     const result = new CompiledContent();
     result.contents = contents;
-    return result;
+    this.compiledContent = result;
   }
 
   private resolveContentData(dataString:string):ContentData{
