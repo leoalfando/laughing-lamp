@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "./node_modules/.bin/gulp build",
-    "start": "npm run build && node ./dist/index.js",
-    "test": "node ./node_modules/jest/bin/jest",
+    "start:dev": "cross-env-shell NODE_ENV=development node ./dist/index.js",
+    "start": "cross-env-shell NODE_ENV=production node ./dist/index.js",
+    "test": "npm run build && node ./node_modules/jest/bin/jest --verbose false",
     "lint:fix": "eslint . --fix --ext .ts",
     "lint": "eslint --quiet . --ext .js,.ts"
   },
@@ -48,6 +49,7 @@
     "gulp-typescript": "^6.0.0-alpha.1",
     "jest": "^27.0.6",
     "jest-plugin-context": "^2.9.0",
+    "lodash": "^4.17.21",
     "sinon": "^11.1.2",
     "ts-jest": "^27.0.4",
     "typescript": "^4.3.5"
