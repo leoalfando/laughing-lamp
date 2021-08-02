@@ -15,6 +15,12 @@ export default class Packer{
   private weightMultiplier = 100;
   private emptyResult = '-';
   private showDebug = process.env.NODE_ENV === 'development'? true:false;
+  private CONSTRAINTS = {
+    MAX_CAPACITY_WEIGHT : 100,
+    MAX_ITEM_NUMBER : 15,
+    MAX_ITEM_WEIGHT : 100,
+    MAX_ITEM_COST : 100
+  }
 
   public async resolveContent(fileName):Promise<string>{
     try {
@@ -34,8 +40,12 @@ export default class Packer{
   private processData(rowData:Content, lineNo:number):string{
     try {
       let maxWeight = rowData.maxWeight;
+      if(maxWeight > this.CONSTRAINTS.MAX_CAPACITY_WEIGHT*this.weightMultiplier){
+        throw new APIException(`Line ${lineNo}: ${ErrorStatus.MAXIMUM_WEIGHT_CAPACITY_EXCEEDED}`);
+      }
       // remove item which weight is exceed limit
       let items = rowData.data;
+      this.validateItems(items, lineNo);
       // sort item by weight ascending, since we prioritize lighter item
       items = _.sortBy(items,['itemWeight']) as ContentData[];
       const itemsLength = items?.length;
@@ -106,6 +116,27 @@ export default class Packer{
     }
   }
 
+  // validate items against the constraints
+  private validateItems(contentData: ContentData[], lineNo: number):void{
+    const n = contentData.length;
+    // eslint-disable-next-line no-useless-catch
+    try {
+      if(n > this.CONSTRAINTS.MAX_ITEM_NUMBER){
+        throw new APIException(`Line ${lineNo}: ${ErrorStatus.MAXIMUM_ITEM_NUMBER_EXCEEDED}`);
+      }
+      for(let i = 0; i < n; i++) {
+        const index = contentData[i].itemIndex;
+        if(contentData[i].itemWeight > this.CONSTRAINTS.MAX_ITEM_WEIGHT * this.weightMultiplier){
+          throw new APIException(`Line ${lineNo} item#${index}: ${ErrorStatus.MAXIMUM_ITEM_WEIGHT_EXCEEDED}`);
+        }
+        if(contentData[i].cost > this.CONSTRAINTS.MAX_ITEM_COST){
+          throw new APIException(`Line ${lineNo} item#${index}: ${ErrorStatus.MAXIMUM_ITEM_COST_EXCEEDED}`);
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
   private async loadFile(fileName):Promise<void> {
     let data= "";
     const filePath = appRoot + `/dist/resources/${fileName}`;
@@ -158,7 +189,7 @@ export default class Packer{
       parcelData.itemWeight = Number(parcelData.itemWeight.toFixed(0));
       parcelData.cost = Number(dataArray[2].replace(/€/g, "")) ? Number(dataArray[2].replace(/€/g, "")) : 0;
     } catch (error) {
-      parcelData = null;
+      parcelData = error.message;
     }
     return parcelData
   }
