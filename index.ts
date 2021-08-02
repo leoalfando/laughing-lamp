@@ -4,7 +4,7 @@ import Packer from './src/service/Packer'
 
 const app = express();
 const packer = new Packer();
-app.get('/api/:fileName', async (req, res, next)=> {
+app.get('/api/:fileName', async (req, res)=> {
   const fileName = req?.params?.fileName;
   const result = await packer.resolveContent(fileName);
   res.status(200).send(result);
