@@ -68,7 +68,10 @@ $ npm run start:dev
 ```
 
 ## Usage Tutorial
-navigate to http://localhost:3000/api/{fileName}
+navigate to http://localhost:3000/api/{fileName}<br/>
+example with valid available file:<br/>
+- http://localhost:3000/api/example_input<br/>
+- http://localhost:3000/api/example_input2<br/>
 > NOTE: port can be change, please navigate to index.ts and update the port then rebuild
 ## Error Status
 FILE_NOT_FOUND_OR_INVALID = File not found or invalid
